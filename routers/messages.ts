@@ -1,13 +1,24 @@
 import express from 'express';
+import fs from 'fs';
+import { Message } from '../types';
 
 const messagesRouter = express.Router();
 
-messagesRouter.get('/', (req, res) => {
-  res.send(`[]`);
+messagesRouter.get('/', (_req, res) => {
+  return res.send('[]');
 });
 
 messagesRouter.post('/create', (req, res) => {
-  res.send(req.body);
+  const date = new Date().toISOString();
+  const messageData: Message = {
+    message: req.body.message,
+    datetime: date,
+  };
+  fs.writeFileSync(
+    `./messages/${'date'}.txt`,
+    JSON.stringify(messageData, null, 2)
+  );
+  return res.send(messageData);
 });
 
 export default messagesRouter;
